@@ -90,8 +90,17 @@ function editItem() {
 }
 
 // delete function
-function deleteItem() {
-  console.log("item deleted");
+function deleteItem(e) {
+  const element = e.currentTarget.parentElement.parentElement;
+  const id = element.dataset.id;
+  list.removeChild(element);
+  if (list.children.length === 0) {
+    container.classList.remove("show-container");
+  }
+  displayAlert("item removed", "danger");
+  setBackToDefault();
+  // remove from local storage
+  removeFromLocalStorage(id);
 }
 
 // set back to default
@@ -104,5 +113,6 @@ function setBackToDefault() {
 
 // ****** LOCAL STORAGE **********
 function addToLocalStorage(id, value) {}
+function removeFromLocalStorage(id) {}
 
 // ****** SETUP ITEMS **********
