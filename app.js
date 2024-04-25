@@ -55,6 +55,11 @@ function addItem(e) {
     // set back to default
     setBackToDefault();
   } else if (value && editFlag) {
+    editElements.innerHTML = value;
+    displayAlert("value changed", "succes");
+    // edit local storage
+    editLocalStorage(editID, value);
+    setBackToDefault();
   } else {
     displayAlert("empty value", "danger");
   }
@@ -82,11 +87,18 @@ function clearItems() {
   container.classList.remove("show-container");
   displayAlert("empty list", "danger");
   setBackToDefault();
-  // localStorage.removeItem("list");
+  localStorage.removeItem("list");
 }
 // edit function
-function editItem() {
-  console.log("item edited");
+function editItem(e) {
+  const element = e.currentTarget.parentElement.parentElement;
+  // set edit item
+  editElements = e.currentTarget.parentElement.previousElementSibling;
+  // set form value
+  grocery.value = editElements.innerHTML;
+  editFlag = true;
+  editID = element.dataset.id;
+  submitBtn.textContent = "edit";
 }
 
 // delete function
@@ -112,7 +124,30 @@ function setBackToDefault() {
 }
 
 // ****** LOCAL STORAGE **********
-function addToLocalStorage(id, value) {}
-function removeFromLocalStorage(id) {}
+function addToLocalStorage(id, value) {
+  const grocery = {
+    id: id,
+    value: value,
+  };
+  let items = getLocalStorage();
+  items.push(grocery);
+  localStorage.setItem("list", JSON.stringify(items));
+}
+function removeFromLocalStorage(id) {
+  let items = getLocalStorage();
+
+  items = items.filter(function (item) {
+    if (item.id !== id) {
+      return item;
+    }
+  });
+  localStorage.setItem("list", JSON.stringify(items));
+}
+function editLocalStorage(id, value) {}
+function getLocalStorage() {
+  return localStorage.get("list")
+    ? JSON.parse(localStorage.getItem("list"))
+    : [];
+}
 
 // ****** SETUP ITEMS **********
